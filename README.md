@@ -16,9 +16,16 @@ C/C++ package manager.
 
 ### Quick Build
 1. Install [conan](http://docs.conan.io/en/latest/installation.html).
-1. `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
-1. `conan create user/channel --build missing`
+1. Add conan repositories
+	+ `conan remote add remote_bintray_conan-community https://api.bintray.com/conan/conan-community/conan`
+	+ `conan remote add remote_bintray_bincrafters https://api.bintray.com/conan/bincrafters/public-conan`
+	+ `conan remote add remote_bintray_inexorgame https://api.bintray.com/conan/inexorgame/inexor-conan`
+	+ `conan remote add remote_bintray_conan https://api.bintray.com/conan/conan/conan-transit`
+	+ `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
+1. `conan create . user/channel --build missing`
     * The result `grpc_lua.dll`/`grpc_lua.so` is in `~/.conan/data/grpc-lua/0.1/user/channel/package/`...
+    * On Windows, add `-o protobuf:static_rt=False`
+        + `conan create . user/channel --build missing -o protobuf:static_rt=False`
 
 ### VS solution
 See [premake/README.md](premake/README.md) to use premake5 to generate VS solution.
@@ -323,3 +330,21 @@ The function parameters are different for different RPC method types.
 
 ## API doc
 See [doc/ldoc/html/index.html](http://htmlpreview.github.io/?https://github.com/jinq0123/grpc-lua/master/doc/ldoc/html/index.html)
+
+## TODO: Integrate into Unity
+
+I think it is easy to integrate grpc-lua into [Unity](https://unity3d.com/),
+but I have no time to do this. Work is:
+
+* Use C version of Lua
+* Support Lua5.1 and LuaJIT
+* Build for iOS and Android
+
+Unity uses Lua library compiled as C.
+If use lua.exe and lua.lib compiled as C,
+C++ objects on stack must be destructed correctly on error.
+See [LuaIntf error handling](https://github.com/SteveKChiu/lua-intf#lua-and-c-error-handling).
+
+Building with Lua51 or LuaJIT library should succeed.
+[LuaPbIntf](https://github.com/jinq0123/LuaPbIntf), which is used to encode and decode protobuf messages,
+need to be recompiled with Lua51 or LuaJIT.
